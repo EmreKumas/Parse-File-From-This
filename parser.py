@@ -1,5 +1,5 @@
 import sys
-import os.path
+import os
 
 
 def read_file(file_name, parse_by_string, index_of_wanted_part):
@@ -10,8 +10,27 @@ def read_file(file_name, parse_by_string, index_of_wanted_part):
             # Read the line and remove the newline character at the end
             line = line.rstrip('\n\r')
 
+            # If the desired string is in this line, we split it and put it in output_list with index provided...
             if parse_by_string in line:
-                print(line)
+                line = line.split()
+                output_list.append(line[index_of_wanted_part])
+
+    # Close the file...
+    file.close()
+
+    return output_list
+
+
+def write_to_file(file_name, output_list):
+    output_file_name = "parsed_" + file_name
+    file = open(output_file_name, 'w')
+
+    for element in output_list:
+        file.write("{}\n".format(element))
+
+    # Lastly, we will delete the last line from the file, because it's empty.
+    file.seek(file.tell() - 2, os.SEEK_SET)
+    file.truncate()
 
     # Close the file...
     file.close()
@@ -34,4 +53,5 @@ if __name__ == '__main__':
         print("Cannot found file with the filename you provided!")
         exit(-1)
 
-    read_file(file_name, parse_by_string, index_of_wanted_part)
+    output_list = read_file(file_name, parse_by_string, int(index_of_wanted_part))
+    write_to_file(file_name, output_list)
